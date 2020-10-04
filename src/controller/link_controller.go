@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"url-shortner/repository"
+	"url-shortner/src/repository"
 )
 
 type LinkRequest struct {

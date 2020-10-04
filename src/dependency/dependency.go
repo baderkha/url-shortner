@@ -2,8 +2,8 @@ package dependency
 
 import (
 	"gorm.io/gorm"
-	"url-shortner/controller"
-	"url-shortner/repository"
+	"url-shortner/src/controller"
+	"url-shortner/src/repository"
 )
 
 type Dependency struct {
@@ -15,7 +15,7 @@ func MakeDependencies(db *gorm.DB) *Dependency {
 		LinkController: &controller.LinkController{
 			LinkRepo: &repository.LinkRepo{
 				BaseRepo: repository.BaseRepo{
-					Contex: db,
+					Context: db,
 				},
 			},
 		},
