@@ -5,9 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"io/ioutil"
+	"log"
 	"os"
 	"url-shortner/src/dependency"
+	"url-shortner/src/repository"
 )
 
 // Models our json input
@@ -18,7 +21,7 @@ type ServerEnv struct {
 // reads the enviroment file if it exists , if not then there's a problem
 func readEnviromentFile() *ServerEnv {
 	var serverEnv ServerEnv
-	jsonFile, err := os.Open("../env.json")
+	jsonFile, err := os.Open("env.json")
 	if err != nil {
 		panic(":0 PANIK , enviroment json not found")
 	}
@@ -36,7 +39,19 @@ func getDB(serverEnv *ServerEnv) *gorm.DB {
 	if err != nil {
 		panic(":0 PANIk , DB CONN COULD NOT BE MADE")
 	}
+	db.Logger = logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			LogLevel: logger.Info, // Log level
+			Colorful: true,        // Disable color
+		},
+	)
 	return db
+}
+
+func migrate(db *gorm.DB) {
+	var link repository.Link
+	db.AutoMigrate(&link)
 }
 
 // Define the gin routes in here using the router
@@ -48,6 +63,7 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 // no buisness logic lives here
 func main() {
 	db := getDB(readEnviromentFile())
+	migrate(db)
 	controller := dependency.MakeDependencies(db)
 	router := gin.Default()
 	makeRoutes(router, controller)

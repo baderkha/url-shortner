@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/satori/go.uuid"
+	"github.com/rs/xid"
 )
 
 type Link struct {
@@ -26,8 +26,7 @@ func (l *LinkRepo) FindLinkById(id string) (*Link, bool) {
 }
 
 func (l *LinkRepo) CreateLink(link *Link) bool {
-	id := uuid.Must(uuid.NewV4(), nil)
-	link.ID = id.String()
+	link.ID = xid.New().String()
 	return l.Create(&link)
 }
 

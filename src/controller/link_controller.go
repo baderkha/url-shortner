@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/url"
 	"url-shortner/src/repository"
 )
 
@@ -17,6 +18,18 @@ type LinkController struct {
 	LinkRepo repository.ILinkRepo
 }
 
+func isValidUrl(toTest string) bool {
+	_, err := url.ParseRequestURI(toTest)
+	if err != nil {
+		return false
+	}
+	u, err := url.Parse(toTest)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+	return true
+}
+
 func (lc *LinkController) ShortenLink(c *gin.Context) {
 	var link repository.Link
 	var linkRequest LinkRequest
@@ -24,6 +37,12 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatusJSON(400, ErrorResponse{
 			Message: "You should have a url in the post request",
+		})
+		return
+	}
+	if !isValidUrl(linkRequest.URL) {
+		c.AbortWithStatusJSON(400, ErrorResponse{
+			Message: "Link is Not Valid",
 		})
 		return
 	}
