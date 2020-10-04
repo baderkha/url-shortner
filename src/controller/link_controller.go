@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/url"
+	"url-shortner/src/dto"
 	"url-shortner/src/repository"
 )
 
@@ -49,7 +51,8 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 	link.URL = linkRequest.URL
 	isCreated := lc.LinkRepo.CreateLink(&link)
 	if isCreated {
-		c.JSON(200, link)
+		dtoLink := dto.MapLink(&link)
+		c.JSON(200, dtoLink)
 		return
 	}
 	c.AbortWithStatusJSON(500, ErrorResponse{
@@ -59,7 +62,10 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 
 func (lc *LinkController) FetchLink(c *gin.Context) {
 	id := c.Param("id")
-	link, isFound := lc.LinkRepo.FindLinkById(id)
+	link := dto.MapLinkDto(&dto.LinkDto{
+		ID: id,
+	})
+	link, isFound := lc.LinkRepo.FindLinkById(fmt.Sprintf("%d", link.ID))
 	if !isFound {
 		c.AbortWithStatusJSON(404,
 			ErrorResponse{

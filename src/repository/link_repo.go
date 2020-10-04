@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"github.com/rs/xid"
+	"gorm.io/gorm"
 )
 
 type Link struct {
-	ID  string `gorm:"id"`
+	gorm.Model
 	URL string `gorm:"url"`
 }
 
@@ -26,7 +26,6 @@ func (l *LinkRepo) FindLinkById(id string) (*Link, bool) {
 }
 
 func (l *LinkRepo) CreateLink(link *Link) bool {
-	link.ID = xid.New().String()
 	return l.Create(&link)
 }
 
