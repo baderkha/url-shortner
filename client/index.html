@@ -58,20 +58,99 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        #snackbar {
+            visibility: hidden; /* Hidden by default. Visible on click */
+            min-width: 250px; /* Set a default minimum width */
+            margin-left: -125px; /* Divide value of min-width by 2 */
+            background-color: #333; /* Black background color */
+            color: #fff; /* White text color */
+            text-align: center; /* Centered text */
+            border-radius: 2px; /* Rounded borders */
+            padding: 16px; /* Padding */
+            position: fixed; /* Sit on top of the screen */
+            z-index: 1; /* Add a z-index if needed */
+            left: 50%; /* Center the snackbar */
+            bottom: 30px; /* 30px from the bottom */
+        }
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible; /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
     </style>
 
     <script>
-        const baseUrl = "https://shrter.xyz";
+        const baseUrl = 'https://shrter.xyz';
         const apiUrl = `${baseUrl}/api`;
-
-        window.onload = async () => {
+        const triggerSnack =  (msg) =>{
+            // Get the snackbar DIV
+            const parentSnack = document.getElementById("snackbar");
+            const snackText = document.getElementById("snack-bar-text");
+            snackText.innerText = msg;
+            // Add the "show" class to DIV
+            parentSnack.className = "show";
             
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ parentSnack.className = parentSnack.className.replace("show", ""); }, 3000);
+         }
+        window.onload = async () => {
             const shortenSearch = document.getElementById('shorten-button');
             const currentUrl = window.location.hash.substring(1);
+            const shortenInput = document.getElementById('shorten-input');
             shortenSearch.onclick = async () => {
                 const shortenInput = document.getElementById('shorten-input');
                 const url = shortenInput.value;
-                const parentDiv = document.getElementById("search-div");
+                const parentDiv = document.getElementById('search-div');
                 const response = await fetch(`${apiUrl}/links`, {
                     method: 'post',
                     body: JSON.stringify({ url }),
@@ -79,38 +158,52 @@
                     return { status: res.status, res: await res.json() };
                 });
 
-                switch(response.status) {
+                switch (response.status) {
                     case 201:
                         shortenInput.value = `${baseUrl}/#${response.res.id}`;
+                        triggerSnack("Generated a short URL !")
                         break;
                     case 400:
-                        shortenInput.placeholder = "Please Put a valid url , this one seems invalid :(";
+                        shortenInput.placeholder =
+                            'Please Put a valid url , this one seems invalid :(';
                         break;
                     default:
-                        shortenInput.placeholder = "Could not fetch the url ... try again :( later ";
+                        shortenInput.placeholder =
+                            'Could not fetch the url ... try again :( later ';
                         break;
                 }
             };
+            // Execute a function when the user releases a key on the keyboard
+            shortenInput.addEventListener('keyup', function (event) {
+                // Number 13 is the "Enter" key on the keyboard
+                if (event.keyCode === 13) {
+                    // Cancel the default action, if needed
+                    event.preventDefault();
+                    // Trigger the button element with a click
+                    shortenSearch.click();
+                }
+            });
             if (currentUrl) {
                 const response = await fetch(`${apiUrl}/links/${currentUrl}`, {
                     method: 'get',
                     headers: {
                         Accept: 'application/json, text/plain, */*',
                         'Content-Type': 'application/json',
-                    }
+                    },
                 }).then(async (res) => {
                     return { status: res.status, res: await res.json() };
                 });
 
-                switch(response.status) {
+                switch (response.status) {
                     case 200:
-                        window.location.href = response.res.url
+                        window.location.href = response.res.url;
                         break;
                     case 404:
-                        alert("The link you request could not be found");
+                        triggerSnack("Could not find the url you requested :( !")
                         break;
                     default:
-                        shortenInput.placeholder = "Could not fetch the url ... try again :( later ";
+                        shortenInput.placeholder =
+                            'Could not fetch the url ... try again :( later ';
                         break;
                 }
             }
@@ -127,7 +220,7 @@
         <div class="wrap" id="search-div">
             <h1>Url Shortner Service</h1>
             <h2>By Ahmad Baderkhan</h2>
-            <div class="search" >
+            <div class="search">
                 <input
                     type="text"
                     id="shorten-input"
@@ -141,5 +234,6 @@
             <p>Check out my <a href="https://github.com/baderkha">Github</a></p>
             <p>Check out the <a href="https://shrter.xyz/readme">Documentation</a></p>
         </div>
+        <div id="snackbar"><p id="snack-bar-text"></p></div>
     </body>
 </html>
