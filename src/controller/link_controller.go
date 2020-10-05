@@ -74,5 +74,6 @@ func (lc *LinkController) FetchLink(c *gin.Context) {
 		)
 		return
 	}
-	c.JSON(200, link)
+	dtoLink := dto.MapLink(link)
+	c.JSON(200, dtoLink)
 }

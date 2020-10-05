@@ -2,8 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/catinello/base62"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
