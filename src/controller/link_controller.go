@@ -2,12 +2,12 @@ package controller
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
 	"url-shortner/src/dto"
 	"url-shortner/src/repository"
+	"url-shortner/util"
 )
 
 type LinkRequest struct {
@@ -51,9 +51,9 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 		return
 	}
 	link.URL = linkRequest.URL
-	prefetchLink, exists := lc.LinkRepo.FindByUrl(link.URL)
+	link.MD5Hash = util.GenerateMD5Hash(linkRequest.URL)
+	prefetchLink, exists := lc.LinkRepo.FindByHashedUrl(link.MD5Hash)
 	if exists {
-		spew.Dump(prefetchLink)
 		// return back existing url
 		c.JSON(200, dto.MapLink(prefetchLink))
 		return

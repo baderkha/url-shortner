@@ -6,12 +6,12 @@ import (
 
 type Link struct {
 	gorm.Model
-	URL string `gorm:"url"`
+	URL     string `gorm:"url"`
+	MD5Hash string `gorm:"type:VARCHAR(50);index:md5_idex,unique;"`
 }
-
 type ILinkRepo interface {
 	FindLinkById(id string) (*Link, bool)
-	FindByUrl(url string) (*Link, bool)
+	FindByHashedUrl(hashedUrl string) (*Link, bool)
 	CreateLink(link *Link) bool
 	DeleteLinkById(id string) bool
 }
@@ -35,9 +35,9 @@ func (l *LinkRepo) DeleteLinkById(id string) bool {
 	return l.DeleteById(id, &link)
 }
 
-func (l *LinkRepo) FindByUrl(url string) (*Link, bool) {
+func (l *LinkRepo) FindByHashedUrl(url string) (*Link, bool) {
 	var link Link
 	db := l.BaseRepo.GetContext()
-	rows := db.Where("url=?", url).First(&link).RowsAffected
+	rows := db.Where("md5_hash=?", url).First(&link).RowsAffected
 	return &link, rows > 0
 }
