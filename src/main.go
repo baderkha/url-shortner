@@ -69,7 +69,10 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 		html := markdown.ToHTML(byteValue, parser, nil)
 		c.Data(200, "text/html; charset=utf-8", html)
 	})
+
+	// get them the json record
 	router.GET("links/:id", controller.FetchLink)
+	// generate a new link
 	router.POST("links", controller.ShortenLink)
 }
 

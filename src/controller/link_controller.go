@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"net/url"
 	"url-shortner/src/dto"
 	"url-shortner/src/repository"
@@ -60,12 +61,17 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 	})
 }
 
-func (lc *LinkController) FetchLink(c *gin.Context) {
+func (lc *LinkController) grabLink(c *gin.Context) (*repository.Link, bool) {
 	id := c.Param("id")
 	link := dto.MapLinkDto(&dto.LinkDto{
 		ID: id,
 	})
 	link, isFound := lc.LinkRepo.FindLinkById(fmt.Sprintf("%d", link.ID))
+	return link, isFound
+}
+
+func (lc *LinkController) FetchLink(c *gin.Context) {
+	link, isFound := lc.grabLink(c)
 	if !isFound {
 		c.AbortWithStatusJSON(404,
 			ErrorResponse{
@@ -76,4 +82,18 @@ func (lc *LinkController) FetchLink(c *gin.Context) {
 	}
 	dtoLink := dto.MapLink(link)
 	c.JSON(200, dtoLink)
+}
+
+func (lc *LinkController) ForwardLink(c *gin.Context) {
+	link, isFound := lc.grabLink(c)
+	if !isFound {
+		c.AbortWithStatusJSON(404,
+			ErrorResponse{
+				Message: "Link was not found for this id",
+			},
+		)
+		return
+	}
+	dtoLink := dto.MapLink(link)
+	c.Redirect(http.StatusPermanentRedirect, dtoLink.URL)
 }
