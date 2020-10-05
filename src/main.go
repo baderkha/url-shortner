@@ -58,16 +58,18 @@ func migrate(db *gorm.DB) {
 	_ = db.AutoMigrate(&link)
 }
 
-// Define the gin routes in here using the router
-func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
+func makeCors(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500", "http://127.0.0.1:8080"},
+		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500", "http://localhost:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "GET"},
 		AllowHeaders:     []string{"Origin", "content-type", "authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+}
+
+func makeStatic(router *gin.Engine) {
 	router.LoadHTMLGlob("client/*.html")
 	router.GET("", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
@@ -80,12 +82,25 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 		html := markdown.ToHTML(byteValue, parser, nil)
 		c.Data(200, "text/html; charset=utf-8", html)
 	})
-	// link forward , hitting this route will cause the link to be resolved and forwarded in the browser
-	router.GET("forward/links/:id", controller.ForwardLink)
-	// get them the json record
-	router.GET("links/:id", controller.FetchLink)
-	// generate a new link
-	router.POST("links", controller.ShortenLink)
+}
+
+// Define the gin routes in here using the router
+func makeRestRoutes(router *gin.Engine, controller *dependency.Dependency) {
+	api := router.Group("api")
+	{
+		// link forward , hitting this route will cause the link to be resolved and forwarded in the browser
+		api.GET("forward/links/:id", controller.ForwardLink)
+		// get them the json record
+		api.GET("links/:id", controller.FetchLink)
+		// generate a new link
+		api.POST("links", controller.ShortenLink)
+	}
+}
+
+func makeRouter(router *gin.Engine, controller *dependency.Dependency) {
+	makeCors(router)
+	makeStatic(router)
+	makeRestRoutes(router, controller)
 }
 
 // no buisness logic lives here
@@ -94,6 +109,6 @@ func main() {
 	migrate(db)
 	controller := dependency.MakeDependencies(db)
 	router := gin.Default()
-	makeRoutes(router, controller)
+	makeRouter(router, controller)
 	_ = router.Run()
 }
