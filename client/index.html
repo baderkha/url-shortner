@@ -73,10 +73,6 @@
                 const parentDiv = document.getElementById("search-div");
                 const response = await fetch(`${apiUrl}/links`, {
                     method: 'post',
-                    headers: {
-                        Accept: 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({ url }),
                 }).then(async (res) => {
                     return { status: res.status, res: await res.json() };
