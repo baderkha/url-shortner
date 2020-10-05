@@ -49,15 +49,24 @@
             cursor: pointer;
             font-size: 20px;
         }
-
-        /*Resize the wrap to see the search bar change!*/
         .wrap {
-            width: 30%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+                width: 50%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        @media only screen and (max-width: 600px) {
+            /*Resize the wrap to see the search bar change!*/
+            .wrap {
+                width: 100%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
         }
+        
 
         #snackbar {
             visibility: hidden; /* Hidden by default. Visible on click */
@@ -132,17 +141,19 @@
     <script>
         const baseUrl = 'https://shrter.xyz';
         const apiUrl = `${baseUrl}/api`;
-        const triggerSnack =  (msg) =>{
+        const triggerSnack = (msg) => {
             // Get the snackbar DIV
-            const parentSnack = document.getElementById("snackbar");
-            const snackText = document.getElementById("snack-bar-text");
+            const parentSnack = document.getElementById('snackbar');
+            const snackText = document.getElementById('snack-bar-text');
             snackText.innerText = msg;
             // Add the "show" class to DIV
-            parentSnack.className = "show";
-            
+            parentSnack.className = 'show';
+
             // After 3 seconds, remove the show class from DIV
-            setTimeout(function(){ parentSnack.className = parentSnack.className.replace("show", ""); }, 3000);
-         }
+            setTimeout(function () {
+                parentSnack.className = parentSnack.className.replace('show', '');
+            }, 3000);
+        };
         window.onload = async () => {
             const shortenSearch = document.getElementById('shorten-button');
             const currentUrl = window.location.hash.substring(1);
@@ -161,7 +172,7 @@
                 switch (response.status) {
                     case 201:
                         shortenInput.value = `${baseUrl}/#${response.res.id}`;
-                        triggerSnack("Generated a short URL !")
+                        triggerSnack('Generated a short URL !');
                         break;
                     case 400:
                         shortenInput.placeholder =
@@ -199,7 +210,7 @@
                         window.location.href = response.res.url;
                         break;
                     case 404:
-                        triggerSnack("Could not find the url you requested :( !")
+                        triggerSnack('Could not find the url you requested :( !');
                         break;
                     default:
                         shortenInput.placeholder =
