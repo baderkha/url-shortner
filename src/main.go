@@ -69,7 +69,7 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 		html := markdown.ToHTML(byteValue, parser, nil)
 		c.Data(200, "text/html; charset=utf-8", html)
 	})
-
+	// link forward , hitting this route will cause the link to be resolved and forwarded in the browser
 	router.GET("forward/links/:id", controller.ForwardLink)
 	// get them the json record
 	router.GET("links/:id", controller.FetchLink)
