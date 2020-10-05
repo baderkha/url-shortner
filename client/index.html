@@ -172,6 +172,7 @@
                 });
 
                 switch (response.status) {
+                    case 200:
                     case 201:
                         shortenInput.value = `${baseUrl}/#${response.res.id}`;
                         triggerSnack('Generated a short URL !');

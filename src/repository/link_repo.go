@@ -11,6 +11,7 @@ type Link struct {
 
 type ILinkRepo interface {
 	FindLinkById(id string) (*Link, bool)
+	FindByUrl(url string) (*Link, bool)
 	CreateLink(link *Link) bool
 	DeleteLinkById(id string) bool
 }
@@ -32,4 +33,11 @@ func (l *LinkRepo) CreateLink(link *Link) bool {
 func (l *LinkRepo) DeleteLinkById(id string) bool {
 	var link Link
 	return l.DeleteById(id, &link)
+}
+
+func (l *LinkRepo) FindByUrl(url string) (*Link, bool) {
+	var link Link
+	db := l.BaseRepo.GetContext()
+	rows := db.Where("url=?", url).First(link).RowsAffected
+	return &link, rows > 0
 }

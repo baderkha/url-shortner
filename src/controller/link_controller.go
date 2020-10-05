@@ -50,8 +50,15 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 		return
 	}
 	link.URL = linkRequest.URL
+	prefetchLink, exists := lc.LinkRepo.FindByUrl(link.URL)
+	if exists {
+		// return back existing url
+		c.JSON(200, dto.MapLink(prefetchLink))
+		return
+	}
 	isCreated := lc.LinkRepo.CreateLink(&link)
 	if isCreated {
+		// return back created url
 		dtoLink := dto.MapLink(&link)
 		c.JSON(201, dtoLink)
 		return
