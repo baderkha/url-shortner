@@ -51,8 +51,7 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 		return
 	}
 	link.URL = linkRequest.URL
-	link.MD5Hash = util.GenerateMD5Hash(linkRequest.URL)
-	prefetchLink, exists := lc.LinkRepo.FindByHashedUrl(link.MD5Hash)
+	prefetchLink, exists := lc.LinkRepo.FindByHashedUrl(util.GenerateMD5Hash(link.MD5Hash))
 	if exists {
 		// return back existing url
 		c.JSON(200, dto.MapLink(prefetchLink))

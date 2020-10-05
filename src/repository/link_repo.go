@@ -2,6 +2,7 @@ package repository
 
 import (
 	"gorm.io/gorm"
+	"url-shortner/util"
 )
 
 type Link struct {
@@ -9,6 +10,12 @@ type Link struct {
 	URL     string `gorm:"url"`
 	MD5Hash string `gorm:"type:VARCHAR(50);index:md5_idex,unique;"`
 }
+
+func (l *Link) BeforeCreate(tx *gorm.DB) (err error) {
+	l.MD5Hash = util.GenerateMD5Hash(l.URL)
+	return nil
+}
+
 type ILinkRepo interface {
 	FindLinkById(id string) (*Link, bool)
 	FindByHashedUrl(hashedUrl string) (*Link, bool)
