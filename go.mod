@@ -6,6 +6,7 @@ require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/catinello/base62 v0.0.0-20160325105823-e0daaeb631c9
 	github.com/davecgh/go-spew v1.1.1
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.0 // indirect
 	github.com/golang/go v0.0.0-20201003170258-869c02ce1f63 // indirect

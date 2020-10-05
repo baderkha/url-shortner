@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 	"url-shortner/src/dependency"
 	"url-shortner/src/repository"
 )
@@ -58,6 +60,14 @@ func migrate(db *gorm.DB) {
 
 // Define the gin routes in here using the router
 func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500"},
+		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "GET"},
+		AllowHeaders:     []string{"Origin", "content-type", "authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	router.GET("", func(c *gin.Context) {
 		extensions := parser.CommonExtensions | parser.AutoHeadingIDs
 		parser := parser.NewWithExtensions(extensions)

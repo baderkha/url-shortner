@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+        body {
+            background: #f2f2f2;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .search {
+            width: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .searchTerm {
+            width: 100%;
+            border: 3px solid #00b4cc;
+            border-right: none;
+            padding: 5px;
+            height: 20px;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            color: #9dbfaf;
+        }
+
+        .searchTerm:focus {
+            color: #00b4cc;
+        }
+
+        .searchButton {
+            width: 100px;
+            height: 36px;
+            border: 1px solid #00b4cc;
+            background: #00b4cc;
+            text-align: center;
+            color: #fff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /*Resize the wrap to see the search bar change!*/
+        .wrap {
+            width: 30%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <script>
+        window.onload = async () => {
+            const apiUrl = 'https://shrter.xyz';
+
+            const shortenSearch = document.getElementById('shorten-button');
+            shortenSearch.onclick = async () => {
+                const shortenInput = document.getElementById('shorten-input');
+                const url = shortenInput.value;
+                const response = await fetch('https://shrter.xyz/links', {
+                    method: 'post',
+                    headers: {
+                        Accept: 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url }),
+                })
+                    .then((res) => res.json())
+                    .then((res) => console.log(res));
+                console.log(response);
+            };
+        };
+    </script>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+
+    <body>
+        <div class="wrap">
+            <h1>Url Shortner Service</h1>
+            <h2>By Ahmad Baderkhan</h2>
+            <div class="search">
+                <input
+                    type="text"
+                    id="shorten-input"
+                    class="searchTerm"
+                    placeholder="https://google.com"
+                />
+                <button type="submit" id="shorten-button" class="searchButton">
+                    <i>Shorten</i>
+                </button>
+            </div>
+            <p>Check out my <a href="https://github.com/baderkha">Github</a></p>
+            <p>Check out the <a href="https://shrter.xyz/readme">Documentation</a></p>
+        </div>
+    </body>
+</html>
