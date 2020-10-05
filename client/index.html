@@ -177,8 +177,8 @@
                         triggerSnack('Generated a short URL !');
                         break;
                     case 400:
-                        shortenInput.placeholder =
-                            'Please Put a valid url , this one seems invalid :(';
+                        shortenInput.value = "";
+                        triggerSnack('Bad Url Try Again !');
                         break;
                     default:
                         shortenInput.placeholder =
