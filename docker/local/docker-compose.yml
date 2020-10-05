@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   shortner-local-mysql:
-    container_name: shortner-local-mysql
+    container_name: shortner-local-mysql-2
     image: mysql:5.7
     restart: always
     environment:
