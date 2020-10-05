@@ -75,10 +75,7 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 	router.GET("/readme", func(c *gin.Context) {
 		extensions := parser.CommonExtensions | parser.AutoHeadingIDs
 		parser := parser.NewWithExtensions(extensions)
-		file, err := os.Open("README.md")
-		if err != nil {
-			panic(":0 PANIK , enviroment json not found")
-		}
+		file, _ := os.Open("README.md")
 		byteValue, _ := ioutil.ReadAll(file)
 		html := markdown.ToHTML(byteValue, parser, nil)
 		c.Data(200, "text/html; charset=utf-8", html)
