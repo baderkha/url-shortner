@@ -70,6 +70,7 @@ func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 		c.Data(200, "text/html; charset=utf-8", html)
 	})
 
+	router.GET("forward/links/:id", controller.ForwardLink)
 	// get them the json record
 	router.GET("links/:id", controller.FetchLink)
 	// generate a new link
