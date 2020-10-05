@@ -61,14 +61,18 @@ func migrate(db *gorm.DB) {
 // Define the gin routes in here using the router
 func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500"},
+		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500", "http://127.0.0.1:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "GET"},
 		AllowHeaders:     []string{"Origin", "content-type", "authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	router.LoadHTMLGlob("client/*.html")
 	router.GET("", func(c *gin.Context) {
+		c.HTML(200, "index.html", nil)
+	})
+	router.GET("/readme", func(c *gin.Context) {
 		extensions := parser.CommonExtensions | parser.AutoHeadingIDs
 		parser := parser.NewWithExtensions(extensions)
 		file, err := os.Open("README.md")

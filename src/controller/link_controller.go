@@ -53,7 +53,7 @@ func (lc *LinkController) ShortenLink(c *gin.Context) {
 	isCreated := lc.LinkRepo.CreateLink(&link)
 	if isCreated {
 		dtoLink := dto.MapLink(&link)
-		c.JSON(200, dtoLink)
+		c.JSON(201, dtoLink)
 		return
 	}
 	c.AbortWithStatusJSON(500, ErrorResponse{

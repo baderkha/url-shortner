@@ -22,8 +22,9 @@ deploy:build-deploy
 	@ssh -i ~/.ssh/eab_ssh root@ssh.shrter.xyz "cd /home/docker && docker load -i ./shortner-api.zip; docker kill shortner-url-ahmad-baderkhan; docker container rm shortner-url-ahmad-baderkhan; docker run -d -p 8080:8080 --name shortner-url-ahmad-baderkhan shortner-url-ahmad-baderkhan:latest; docker ps"
 	
 prepare-build-dir:
-	mkdir -p dist
+	mkdir -p dist/client
 	cp README.md dist/README.md
+	cp -R client/* dist/client/
 build:prepare-build-dir
 	cp env.json dist/env.json
 
