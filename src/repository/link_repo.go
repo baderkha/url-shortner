@@ -8,7 +8,7 @@ import (
 type Link struct {
 	gorm.Model
 	URL     string `gorm:"url"`
-	MD5Hash string `gorm:"type:VARCHAR(50);index:md5_idex,unique;"`
+	MD5Hash string `gorm:"type:VARCHAR(100);index:md5_idex,unique;"`
 }
 
 func (l *Link) BeforeCreate(tx *gorm.DB) (err error) {
