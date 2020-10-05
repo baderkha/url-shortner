@@ -1,7 +1,7 @@
 ## Project : URL Shortner REST API
 ## Author  : Ahmad Baderkhan
 ## Type    : API => GO LANG 
-## GITHUB  : 
+## GITHUB  : https://github.com/baderkha/url-shortner
 ---
 
 ### Description
@@ -36,24 +36,30 @@ In a terminal type the following command in the project root directory : =>
 
 #### Creating a Domain 
 - Curl
+
     ``` bash 
       curl --request POST \
            --url http://localhost:8080/links \
            --header 'content-type: application/json' \
            --data '{"url":"<<your url here>>"}' 
     ```
- - Sample Response
+ 
+- Sample Response
+
     ```json 
     {"id":"1","url":"<<your url here>>"}
     ```
 
 #### Fetching Created Domain 
 - Curl
-  ```bash
-    curl --request GET \
-         --url http://localhost:8080/links/1
-   ```
-- Sample Response 
-  ```json 
-    {"id":"1","url":"<<your url here>>"}
+
+    ```bash
+      curl --request GET \
+          --url http://localhost:8080/links/1
     ```
+
+- Sample Response 
+
+    ```json 
+      {"id":"1","url":"<<your url here>>"}
+      ```
