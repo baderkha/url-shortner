@@ -38,6 +38,6 @@ func (l *LinkRepo) DeleteLinkById(id string) bool {
 func (l *LinkRepo) FindByUrl(url string) (*Link, bool) {
 	var link Link
 	db := l.BaseRepo.GetContext()
-	rows := db.Where("url=?", url).First(link).RowsAffected
+	rows := db.Where("url=?", url).First(&link).RowsAffected
 	return &link, rows > 0
 }
