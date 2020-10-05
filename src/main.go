@@ -51,11 +51,14 @@ func getDB(serverEnv *ServerEnv) *gorm.DB {
 
 func migrate(db *gorm.DB) {
 	var link repository.Link
-	db.AutoMigrate(&link)
+	_ = db.AutoMigrate(&link)
 }
 
 // Define the gin routes in here using the router
 func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
+	router.GET("", func(c *gin.Context) {
+		c.JSON(200, "OK , THIS API IS OWNED BY AHMAD BADERKHAN :) =>")
+	})
 	router.GET("links/:id", controller.FetchLink)
 	router.POST("links", controller.ShortenLink)
 }
