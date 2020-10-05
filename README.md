@@ -39,7 +39,7 @@ In a terminal type the following command in the project root directory : =>
 
     ``` bash 
       curl --request POST \
-           --url http://localhost:8080/links \
+           --url https://shrter.xyz/links \
            --header 'content-type: application/json' \
            --data '{"url":"<<your url here>>"}' 
     ```
@@ -55,7 +55,7 @@ In a terminal type the following command in the project root directory : =>
 
     ```bash
       curl --request GET \
-          --url http://localhost:8080/links/1
+          --url https://shrter.xyz/links/1
     ```
 
 - Sample Response 
