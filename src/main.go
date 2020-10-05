@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/parser"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -57,7 +59,15 @@ func migrate(db *gorm.DB) {
 // Define the gin routes in here using the router
 func makeRoutes(router *gin.Engine, controller *dependency.Dependency) {
 	router.GET("", func(c *gin.Context) {
-		c.JSON(200, "OK , THIS API IS OWNED BY AHMAD BADERKHAN :) =>")
+		extensions := parser.CommonExtensions | parser.AutoHeadingIDs
+		parser := parser.NewWithExtensions(extensions)
+		file, err := os.Open("README.md")
+		if err != nil {
+			panic(":0 PANIK , enviroment json not found")
+		}
+		byteValue, _ := ioutil.ReadAll(file)
+		html := markdown.ToHTML(byteValue, parser, nil)
+		c.Data(200, "text/html; charset=utf-8", html)
 	})
 	router.GET("links/:id", controller.FetchLink)
 	router.POST("links", controller.ShortenLink)

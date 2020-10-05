@@ -23,6 +23,7 @@ deploy:build-deploy
 	
 prepare-build-dir:
 	mkdir -p dist
+	cp README.md dist/README.md
 build:prepare-build-dir
 	cp env.json dist/env.json
 

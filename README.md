@@ -1,6 +1,7 @@
-## Project : url-shortner
+## Project : URL Shortner REST API
 ## Author  : Ahmad Baderkhan
 ## Type    : API => GO LANG 
+## GITHUB  : 
 ---
 
 ### Description
@@ -23,9 +24,10 @@
 ---
 
 ### Getting Started
+In a terminal type the following command in the project root directory : =>
 
-1) ```go install```
-2) ```make start```
+- ```go install```
+- ```make start```
 
 ---
 
