@@ -61,7 +61,8 @@
     </style>
 
     <script>
-        const apiUrl = 'https://shrter.xyz/api';
+        const baseUrl = "https://shrter.xyz";
+        const apiUrl = `${baseUrl}/api`;
 
         window.onload = async () => {
             
@@ -80,7 +81,7 @@
 
                 switch(response.status) {
                     case 201:
-                        shortenInput.value = `${apiUrl}/#${response.res.id}`;
+                        shortenInput.value = `${baseUrl}/#${response.res.id}`;
                         break;
                     case 400:
                         shortenInput.placeholder = "Please Put a valid url , this one seems invalid :(";
