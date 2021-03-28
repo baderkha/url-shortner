@@ -71,7 +71,7 @@ func makeStatic(router *gin.Engine) {
 	router.GET("/readme", func(c *gin.Context) {
 		extensions := parser.CommonExtensions | parser.AutoHeadingIDs
 		parser := parser.NewWithExtensions(extensions)
-		file, _ := os.Open("README.md")
+		file, _ := os.Open(BaseResourcePath + "README.md")
 		byteValue, _ := ioutil.ReadAll(file)
 		html := markdown.ToHTML(byteValue, parser, nil)
 		c.Data(200, "text/html; charset=utf-8", html)
