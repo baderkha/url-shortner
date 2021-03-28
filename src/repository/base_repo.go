@@ -1,44 +1,33 @@
 package repository
 
 import (
-	"gorm.io/gorm"
+	"github.com/guregu/dynamo"
 )
 
 type BaseRepo struct {
-	Context *gorm.DB
+	Context *dynamo.DB
+	Table   string
 }
 
-func (b *BaseRepo) GetContext() *gorm.DB {
-	return b.Context
+func (b *BaseRepo) GetContext() dynamo.Table {
+	return b.Context.Table(b.Table)
 }
 
 func (b *BaseRepo) FindById(id string, model interface{}) bool {
-	return b.
-		GetContext().
-		Where("id=?", id).
-		Find(model).
-		RowsAffected > 0
-}
-
-func (b *BaseRepo) FindAll(id string, model interface{}) bool {
-	return b.
-		GetContext().
-		Find(model).
-		RowsAffected > 0
+	return b.GetContext().Get("ID", id).One(dynamo.AWSEncoding(&model)) == nil
 }
 
 func (b *BaseRepo) Create(model interface{}) bool {
-	return b.
+	err := b.
 		GetContext().
-		Create(model).
-		RowsAffected > 0
+		Put(model).
+		Run()
+	return err == nil
 }
 
-func (b *BaseRepo) DeleteById(id string, model interface{}) bool {
+func (b *BaseRepo) DeleteById(id string) bool {
 	return b.
 		GetContext().
-		Where("id=?", id).
-		Unscoped().
-		Delete(model).
-		RowsAffected > 0
+		Delete("ID", id).
+		Run() == nil
 }

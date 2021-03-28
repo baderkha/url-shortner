@@ -1,9 +1,10 @@
 package dto
 
 import (
-	"github.com/mattheath/base62"
-	"gorm.io/gorm"
+	"strconv"
 	"url-shortner/src/repository"
+
+	"github.com/mattheath/base62"
 )
 
 type LinkDto struct {
@@ -12,8 +13,8 @@ type LinkDto struct {
 }
 
 func MapLink(link *repository.Link) *LinkDto {
-	id := link.ID
-	encoded := base62.EncodeInt64(int64(id))
+	id, _ := strconv.ParseInt(link.ID, 10, 64)
+	encoded := base62.EncodeInt64(id)
 	return &LinkDto{
 		ID:  encoded,
 		URL: link.URL,
@@ -23,9 +24,7 @@ func MapLink(link *repository.Link) *LinkDto {
 func MapLinkDto(linkDto *LinkDto) *repository.Link {
 	decoded := uint(base62.DecodeToInt64(linkDto.ID))
 	return &repository.Link{
-		Model: gorm.Model{
-			ID: decoded,
-		},
+		ID:  string(decoded),
 		URL: linkDto.URL,
 	}
 }

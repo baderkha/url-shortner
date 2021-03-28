@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
 	"url-shortner/src/dto"
 	"url-shortner/src/repository"
 	"url-shortner/util"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LinkRequest struct {
@@ -74,7 +74,7 @@ func (lc *LinkController) grabLink(c *gin.Context) (*repository.Link, bool) {
 	link := dto.MapLinkDto(&dto.LinkDto{
 		ID: id,
 	})
-	link, isFound := lc.LinkRepo.FindLinkById(fmt.Sprintf("%d", link.ID))
+	link, isFound := lc.LinkRepo.FindLinkById(link.ID)
 	return link, isFound
 }
 

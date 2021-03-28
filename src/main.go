@@ -2,30 +2,32 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"os"
+	"time"
+	"url-shortner/src/dependency"
+	"url-shortner/util"
+
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"io/ioutil"
-	"log"
-	"os"
-	"time"
-	"url-shortner/src/dependency"
-	"url-shortner/src/repository"
+	"github.com/guregu/dynamo"
 )
 
 // Models our json input
 type ServerEnv struct {
-	DSN string `json:"dsn"`
+	DynamoRegion string `json:"dynamoRegion"`
+	IsOffline    bool   `json:"isOffline"`
 }
 
 // reads the enviroment file if it exists , if not then there's a problem
 func readEnviromentFile() *ServerEnv {
 	var serverEnv ServerEnv
-	jsonFile, err := os.Open("env.json")
+	jsonFile, err := os.Open("dist/env.json")
 	if err != nil {
 		panic(":0 PANIK , enviroment json not found")
 	}
@@ -38,29 +40,13 @@ func readEnviromentFile() *ServerEnv {
 }
 
 // fetch the db connection here
-func getDB(serverEnv *ServerEnv) *gorm.DB {
-	db, err := gorm.Open(mysql.Open(serverEnv.DSN), &gorm.Config{})
-	if err != nil {
-		panic(":0 PANIk , DB CONN COULD NOT BE MADE")
-	}
-	db.Logger = logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			LogLevel: logger.Info, // Log level
-			Colorful: true,        // Disable color
-		},
-	)
-	return db
-}
-
-func migrate(db *gorm.DB) {
-	var link repository.Link
-	_ = db.AutoMigrate(&link)
+func getDB(serverEnv *ServerEnv) *dynamo.DB {
+	return dynamo.New(session.New(), &aws.Config{Region: aws.String(serverEnv.DynamoRegion)})
 }
 
 func makeCors(router *gin.Engine) {
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://shrter.xyz", "http://127.0.0.1:5500", "http://localhost:8080"},
+		AllowOrigins:     []string{"https://shrter.link", "https://shrter.xyz", "http://127.0.0.1:5500", "http://localhost:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "GET"},
 		AllowHeaders:     []string{"Origin", "content-type", "authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -70,7 +56,7 @@ func makeCors(router *gin.Engine) {
 }
 
 func makeStatic(router *gin.Engine) {
-	router.LoadHTMLGlob("client/*.html")
+	router.LoadHTMLGlob("dist/client/*.html")
 	router.GET("", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
@@ -105,10 +91,17 @@ func makeRouter(router *gin.Engine, controller *dependency.Dependency) {
 
 // no buisness logic lives here
 func main() {
-	db := getDB(readEnviromentFile())
-	migrate(db)
+	serverEnv := readEnviromentFile()
+	db := getDB(serverEnv)
 	controller := dependency.MakeDependencies(db)
 	router := gin.Default()
 	makeRouter(router, controller)
-	_ = router.Run()
+	if serverEnv.IsOffline {
+		_ = router.Run(":7989")
+
+	} else {
+		// handle as lambda enviroment
+		lambda.Start(util.Handler(router))
+	}
+
 }

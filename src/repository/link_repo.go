@@ -1,19 +1,14 @@
 package repository
 
 import (
-	"gorm.io/gorm"
+	"fmt"
 	"url-shortner/util"
 )
 
 type Link struct {
-	gorm.Model
-	URL     string `gorm:"url"`
-	MD5Hash string `gorm:"type:VARCHAR(100);index:md5_idex,unique;"`
-}
-
-func (l *Link) BeforeCreate(tx *gorm.DB) (err error) {
-	l.MD5Hash = util.GenerateMD5Hash(l.URL)
-	return nil
+	ID      string
+	URL     string
+	MD5Hash string
 }
 
 type ILinkRepo interface {
@@ -34,17 +29,25 @@ func (l *LinkRepo) FindLinkById(id string) (*Link, bool) {
 }
 
 func (l *LinkRepo) CreateLink(link *Link) bool {
-	return l.Create(&link)
+	link.MD5Hash = util.GenerateMD5Hash(link.URL)
+	id := util.RandUint64()
+	link.ID = fmt.Sprintf("%d", id)
+	return l.Create(link)
 }
 
 func (l *LinkRepo) DeleteLinkById(id string) bool {
-	var link Link
-	return l.DeleteById(id, &link)
+	return l.DeleteById(id)
 }
 
 func (l *LinkRepo) FindByHashedUrl(url string) (*Link, bool) {
-	var link Link
+	var links []Link
 	db := l.BaseRepo.GetContext()
-	rows := db.Where("md5_hash=?", url).First(&link).RowsAffected
-	return &link, rows > 0
+	err := db.Scan().Filter("'MD5Hash' = ?", url).All(&links)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	if len(links) > 0 {
+		return &links[0], true
+	}
+	return nil, false
 }

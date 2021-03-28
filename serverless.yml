@@ -1,0 +1,32 @@
+## NAME OF SERVICE
+service: shrter-go-service
+## RUN TIME CONFIGS
+provider:
+    memorySize: 1500
+    name: aws
+    runtime: go1.x
+    iamRoleStatements:
+        - Effect: 'Allow'
+          Action:
+              - 'dynamodb:*'
+          Resource:
+              - '*'
+
+## STUFF TO INCLUDE
+package:
+    exclude:
+        - ./**
+    include:
+        - ./dist/**
+## API
+functions:
+    api:
+        timeout: 30 # optional, in seconds, default is 6
+        handler: dist/main
+        events:
+            - http:
+                  path: /
+                  method: any
+            - http:
+                  path: /{proxy+}
+                  method: any
