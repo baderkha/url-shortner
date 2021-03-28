@@ -174,7 +174,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/shrter-go-service/dev/1616952657111-2021-03-28T17:30:57.111Z/shrter-go-service.zip"
+                "S3Key": "serverless/shrter-go-service/dev/1616958687117-2021-03-28T19:11:27.117Z/shrter-go-service.zip"
               },
               "FunctionName": "shrter-go-service-dev-api",
               "Handler": "dist/main",
@@ -192,14 +192,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionv70D215LozrAox1KURNZHT5NvZMz9nqRpfdUPyD3M": {
+          "ApiLambdaVersion9WBTlVdcOfhkZczdUeKG2Pl2eLV21O52GgHlemTkk": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "vDvjVsbZVuebK39imLMpHRnv4pCgqTRbL9Y7I1ujc2c="
+              "CodeSha256": "gdtS5z3MPihyMAxm06P1/66NXC0OQYj4IIfzmGUojCA="
             }
           },
           "ApiGatewayRestApi": {
@@ -318,7 +318,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1616952655631": {
+          "ApiGatewayDeployment1616958685698": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -378,7 +378,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionv70D215LozrAox1KURNZHT5NvZMz9nqRpfdUPyD3M"
+              "Ref": "ApiLambdaVersion9WBTlVdcOfhkZczdUeKG2Pl2eLV21O52GgHlemTkk"
             }
           },
           "ServiceEndpoint": {
@@ -501,7 +501,7 @@
         "memory": 1500,
         "runtime": "go1.x",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionv70D215LozrAox1KURNZHT5NvZMz9nqRpfdUPyD3M"
+        "versionLogicalId": "ApiLambdaVersion9WBTlVdcOfhkZczdUeKG2Pl2eLV21O52GgHlemTkk"
       }
     },
     "configValidationMode": "warn",
@@ -533,7 +533,7 @@
           "./dist/**"
         ],
         "artifact": "/Users/ahmad/url-shortner/.serverless/shrter-go-service.zip",
-        "artifactDirectoryName": "serverless/shrter-go-service/dev/1616952657111-2021-03-28T17:30:57.111Z"
+        "artifactDirectoryName": "serverless/shrter-go-service/dev/1616958687117-2021-03-28T19:11:27.117Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
@@ -543,7 +543,7 @@
     "artifact": "/Users/ahmad/url-shortner/.serverless/shrter-go-service.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/shrter-go-service/dev/1616952657111-2021-03-28T17:30:57.111Z",
+    "artifactDirectoryName": "serverless/shrter-go-service/dev/1616958687117-2021-03-28T19:11:27.117Z",
     "artifact": "shrter-go-service.zip"
   }
 }
