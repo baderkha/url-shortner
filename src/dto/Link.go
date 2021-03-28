@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"fmt"
 	"strconv"
 	"url-shortner/src/repository"
 
@@ -13,8 +14,11 @@ type LinkDto struct {
 }
 
 func MapLink(link *repository.Link) *LinkDto {
-	id, _ := strconv.ParseInt(link.ID, 10, 64)
-	encoded := base62.EncodeInt64(id)
+	fmt.Println(link.ID)
+	id, _ := strconv.ParseUint(link.ID, 10, 64)
+	fmt.Println(id)
+	encoded := base62.EncodeInt64(int64(id))
+	fmt.Printf("encoded" + encoded)
 	return &LinkDto{
 		ID:  encoded,
 		URL: link.URL,
@@ -22,9 +26,11 @@ func MapLink(link *repository.Link) *LinkDto {
 }
 
 func MapLinkDto(linkDto *LinkDto) *repository.Link {
-	decoded := uint(base62.DecodeToInt64(linkDto.ID))
+
+	decoded := base62.StdEncoding.DecodeToInt64(linkDto.ID)
+	fmt.Print("decoded" + fmt.Sprintf("%d", decoded))
 	return &repository.Link{
-		ID:  string(decoded),
+		ID:  fmt.Sprintf("%d", decoded),
 		URL: linkDto.URL,
 	}
 }

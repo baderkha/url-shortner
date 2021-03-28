@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/guregu/dynamo"
 )
 
@@ -14,7 +16,8 @@ func (b *BaseRepo) GetContext() dynamo.Table {
 }
 
 func (b *BaseRepo) FindById(id string, model interface{}) bool {
-	return b.GetContext().Get("ID", id).One(dynamo.AWSEncoding(&model)) == nil
+	fmt.Println(id)
+	return b.GetContext().Get("ID", id).One(model) == nil
 }
 
 func (b *BaseRepo) Create(model interface{}) bool {

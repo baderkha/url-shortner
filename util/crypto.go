@@ -23,5 +23,5 @@ func Randint64() (int64, error) {
 func RandUint64() uint64 {
 	buf := make([]byte, 8)
 	rand.Read(buf) // Always succeeds, no need to check error
-	return binary.LittleEndian.Uint64(buf)
+	return uint64(binary.LittleEndian.Uint32(buf))
 }
